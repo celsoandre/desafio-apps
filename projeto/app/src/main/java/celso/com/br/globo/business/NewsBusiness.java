@@ -9,10 +9,10 @@ import java.util.List;
 import celso.com.br.globo.models.Content;
 import celso.com.br.globo.models.Contents;
 import celso.com.br.globo.models.Publish;
-import celso.com.br.globo.operation.OperarionResult;
 import celso.com.br.globo.operation.OperationsListener;
 import celso.com.br.globo.repository.NewsRepository;
 import celso.com.br.globo.utils.ListUtils;
+import celso.com.br.globo.utils.StringUtils;
 
 public class NewsBusiness {
 
@@ -22,26 +22,24 @@ public class NewsBusiness {
         this.mNewsRepository = new NewsRepository();
     }
 
-    public void getAllNews(final OperationsListener<Publish> listener){
-
+    public void getAllNews(final OperationsListener<Publish> listener) {
 
 
         mNewsRepository.getAllNews(new OperationsListener<List<Contents>>() {
             @Override
             public void OnSuccess(List<Contents> contents) {
-                if (ListUtils.listEmptyOrNull(contents)==false){
+                if (ListUtils.listEmptyOrNull(contents) == false) {
                     listener.OnSuccess(convertPublisher(contents));
                 }
             }
 
             @Override
             public void OnFailure(int errorCode, String errorMessage) {
-                listener.OnFailure(errorCode,errorMessage );
+                listener.OnFailure(errorCode, errorMessage);
             }
         });
 
     }
-
 
 
     private Publish convertPublisher(List<Contents> mListResult) {
@@ -58,7 +56,7 @@ public class NewsBusiness {
 
         while (iterator.hasNext()) {
             Content mContent = iterator.next();
-            if (mContent.getId().equals(contentOptional.get().getId())) {
+            if (mContent.getId().equals(contentOptional.get().getId()) || StringUtils.isNullOrEmpty(mContent.getText()) == true) {
                 iterator.remove();
             }
         }
@@ -68,7 +66,6 @@ public class NewsBusiness {
 
         return publish;
     }
-
 
 
 }

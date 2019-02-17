@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import celso.com.br.globo.utils.Constants;
 import celso.com.br.globo.utils.DateTimeUtils;
 import celso.com.br.globo.utils.ListUtils;
 import celso.com.br.globo.utils.PicassoUtil;
+import celso.com.br.globo.utils.StringUtils;
 
 public class NewsDetailsActivity extends BaseActivity implements IActivity {
 
@@ -27,13 +29,13 @@ public class NewsDetailsActivity extends BaseActivity implements IActivity {
     private Content mContent;
 
     //Components
-    private TextView mTextViewTitleDetail;//text_view_title_detail
-    private TextView mTextViewTextDetail;//text_view_text_detail
-    private TextView mTextViewInfo;//text_view_info
-    private ImageView mImageViewDestak;//image_view_destak
-    private TextView mTextViewImageText;//text_view_image_text
-    private TextView mTextViewNews;//text_view_news_detail
-    private TextView mTextViewInfoDateTime;//text_view_info_date_time
+    private TextView mTextViewTitleDetail;
+    private TextView mTextViewTextDetail;
+    private TextView mTextViewInfo;
+    private ImageView mImageViewDestak;
+    private TextView mTextViewImageText;
+    private TextView mTextViewNews;
+    private TextView mTextViewInfoDateTime;
     private Toolbar mToolbar;
     private TextView mTextViewToolbarTitle;
 
@@ -52,60 +54,64 @@ public class NewsDetailsActivity extends BaseActivity implements IActivity {
     @Override
     public void initialize() {
 
-        mTextViewTitleDetail   = findViewById(R.id.text_view_title_detail);
-        mTextViewTextDetail    = findViewById(R.id.text_view_text_detail);
-        mTextViewInfo          = findViewById(R.id.text_view_info);
-        mTextViewInfoDateTime  = findViewById(R.id.text_view_info_date_time);
-        mImageViewDestak       = findViewById(R.id.image_view_destak);
-        mTextViewImageText     = findViewById(R.id.text_view_image_text);
-        mTextViewNews          = findViewById(R.id.text_view_news_detail);
-        mToolbar               = findViewById(R.id.toolbar);
-        mTextViewToolbarTitle  = findViewById(R.id.toolbar_title);
+        mTextViewTitleDetail = findViewById(R.id.text_view_title_detail);
+        mTextViewTextDetail = findViewById(R.id.text_view_text_detail);
+        mTextViewInfo = findViewById(R.id.text_view_info);
+        mTextViewInfoDateTime = findViewById(R.id.text_view_info_date_time);
+        mImageViewDestak = findViewById(R.id.image_view_destak);
+        mTextViewImageText = findViewById(R.id.text_view_image_text);
+        mTextViewNews = findViewById(R.id.text_view_news_detail);
+        mToolbar = findViewById(R.id.toolbar);
+        mTextViewToolbarTitle = findViewById(R.id.toolbar_title);
 
         setSupportActionBar(mToolbar);
-
 
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        mToolbar.setNavigationIcon(this.getDrawable(R.drawable.ic_arrow_white));
     }
 
     @Override
     public void loadData() {
         Bundle bundleExtra = getIntent().getBundleExtra(MainActivity.BUNDLE_CONTENT);
-        if (bundleExtra!=null){
+        if (bundleExtra != null) {
             mContent = (Content) bundleExtra.getSerializable(MainActivity.BUNDLE_CONTENT);
-            Log.i("loadData", "loadData: ");
         }
 
     }
 
     @Override
     public void loadViews() {
+        mToolbar.setNavigationIcon(this.getDrawable(R.drawable.ic_arrow_white));
+
         mTextViewToolbarTitle.setText(mContent.getSection().getName().toUpperCase());
 
         mTextViewTitleDetail.setText(mContent.getTitle());
 
         mTextViewTextDetail.setText(mContent.getSubtitle());
 
-        if (ListUtils.listEmptyOrNull(mContent.getAuthors())==false)
+        if (ListUtils.listEmptyOrNull(mContent.getAuthors()) == false)
             mTextViewInfo.setText(mContent.getAuthors().get(0));
 
         mTextViewInfoDateTime.setText(DateTimeUtils.applyDateTimeWithHourMinute(mContent.getDateTimePostIn(), true));
 
-        if (ListUtils.listEmptyOrNull(mContent.getImagens())==false){
+        if (ListUtils.listEmptyOrNull(mContent.getImagens()) == false) {
 
             Imagen mIagem = mContent.getImagens().get(0);
 
-            PicassoUtil.setImagem(this, mIagem.getUrl() ,mImageViewDestak);
+            PicassoUtil.setImagem(this, mIagem.getUrl(), mImageViewDestak);
 
-            String subtitle = String.format("%s "+getString(Constants.ConstantsStrings.PICTURE)+": %s", mIagem.getSubtitle(), mIagem.getSource());
+            if (StringUtils.isNullOrEmpty(mIagem.getSubtitle()) == false && StringUtils.isNullOrEmpty(mIagem.getSource()) == false) {
+                String subtitle = String.format("%s " + getString(Constants.ConstantsStrings.PICTURE) + ": %s", mIagem.getSubtitle(), mIagem.getSource());
 
-            mTextViewImageText.setText(subtitle);
-        }else {
+                mTextViewImageText.setVisibility(View.VISIBLE);
+                mTextViewImageText.setText(subtitle);
+            }
+
+
+        } else {
             PicassoUtil.setImagemNotFound(this, mImageViewDestak);
         }
 
@@ -131,12 +137,13 @@ public class NewsDetailsActivity extends BaseActivity implements IActivity {
             case android.R.id.home:
 
                 finish();
-                //overridePendingTransition(R.anim.right_out, R.anim.left_in);
 
                 return true;
 
             case R.id.action_news_share:
+
                 shareTextUrl();
+
             default:
                 break;
         }
@@ -153,7 +160,7 @@ public class NewsDetailsActivity extends BaseActivity implements IActivity {
         share.putExtra(Intent.EXTRA_SUBJECT, mContent.getTitle());
         share.putExtra(Intent.EXTRA_TEXT, mContent.getUrl());
 
-        startActivity(Intent.createChooser(share, "Compartilhar..."));
+        startActivity(Intent.createChooser(share, getString(Constants.ConstantsStrings.TEXT_SHARE)));
     }
 
 }

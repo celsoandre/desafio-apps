@@ -48,7 +48,6 @@ public class MainActivity extends BaseActivity implements IActivity, AdapterNews
     private ConstraintLayout mConstraintLayoutImage;
     private Toolbar mToolbar;
     private TextView mTextViewToolbarTitle;
-
     private LinearLayout mLayoutFullPosts;
     private LinearLayout mLayoutPostNotFound;
     private LinearLayout mLayoutNotFoundInternet;
@@ -60,10 +59,10 @@ public class MainActivity extends BaseActivity implements IActivity, AdapterNews
         setContentView(R.layout.activity_main);
 
 
-        initialize();
-        loadData();
-        loadViews();
-        events();
+        this.initialize();
+        this.loadData();
+        this.loadViews();
+        this.events();
     }
 
     @Override
@@ -85,11 +84,7 @@ public class MainActivity extends BaseActivity implements IActivity, AdapterNews
         mTextViewToolbarTitle = findViewById(R.id.toolbar_title);
 
 
-        mAdapterNews = new AdapterNews();
-        mAdapterNews.setListener(this);
-        mRecycleViewNews.setLayoutManager(new LinearLayoutManager(this));
-        mRecycleViewNews.addItemDecoration(new DividerItemDecoration(mRecycleViewNews.getContext(), DividerItemDecoration.VERTICAL));
-        mRecycleViewNews.setAdapter(mAdapterNews);
+
 
 
     }
@@ -107,12 +102,18 @@ public class MainActivity extends BaseActivity implements IActivity, AdapterNews
 
         mToolbar.setNavigationIcon(this.getDrawable(R.drawable.as_above));
 
+        mAdapterNews = new AdapterNews();
+        mAdapterNews.setListener(this);
+        mRecycleViewNews.setLayoutManager(new LinearLayoutManager(this));
+        mRecycleViewNews.addItemDecoration(new DividerItemDecoration(mRecycleViewNews.getContext(), DividerItemDecoration.VERTICAL));
+        mRecycleViewNews.setAdapter(mAdapterNews);
+
 
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
-        mTextViewToolbarTitle.setText(getString(Constants.ConstantsStrings.StringsMainActivity.TOOLBAR_TITLE).toUpperCase());
+        mTextViewToolbarTitle.setText(getString(Constants.ConstantsStrings.TOOLBAR_TITLE).toUpperCase());
 
 
 

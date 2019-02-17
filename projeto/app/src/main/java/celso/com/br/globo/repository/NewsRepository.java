@@ -3,7 +3,6 @@ package celso.com.br.globo.repository;
 import java.util.List;
 
 import celso.com.br.globo.api.RetrofitInitialize;
-import celso.com.br.globo.operation.OperarionResult;
 import celso.com.br.globo.models.Contents;
 import celso.com.br.globo.operation.OperationsListener;
 import celso.com.br.globo.utils.Constants;
